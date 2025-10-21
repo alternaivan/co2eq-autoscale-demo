@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: carbon-intensity
+  namespace: default  # Adjust to your namespace
+spec:
+  scaleTargetRef:
+    name: sample-app  # Replace with your deployment name
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+        metricName: carbon_intensity_green_energy
+        threshold: '50'
+        activationThreshold: '1'
+        # Inverted logic: higher value when carbon intensity is lower (greener)
+        query: (250 - avg(carbon_intensity_gco2_per_kwh))

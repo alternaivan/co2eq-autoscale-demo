@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  labels:
+    app: sample-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      containers:
+      - image: <your-registry>/co2eq-autoscale-demo:v0.0.1
+        name: metrics-provider
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: ELECTRICITY_MAPS_API_KEY
+          value: <your-api-key>
+        - name: ZONE
+          value: <your-zone>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sample-app
+  name: sample-app
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: sample-app
+  type: ClusterIP

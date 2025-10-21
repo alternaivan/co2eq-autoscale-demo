@@ -1,0 +1,19 @@
+kind: ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: sample-app
+  labels:
+    app.kubernetes.io/instance: prometheus
+    app: sample-app
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: sample-app
+    app.kubernetes.io/part-of: sample-app
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: sample-app
+  endpoints:
+  - port: http
